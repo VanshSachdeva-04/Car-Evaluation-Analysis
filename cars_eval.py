@@ -64,3 +64,52 @@ print("="*60)
 
 #Save the preprocessed dataset to a new CSV file
 df.to_csv('car_encoded.csv', index=False)
+
+# --- Week 3: Extract feature importance scores and conduct "sensitivity analysis" ---
+
+print("\n" + "="*60)
+print("Week 3: Feature Importance Scores".center(60))
+print("="*60)
+# Extract and sort feature importances from the best Random Forest model
+importances = best_rf.feature_importances_
+feature_names = X.columns
+feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
+feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+print(feature_importance_df.to_string(index=False))
+
+print("\n" + "="*60)
+print("Week 3: Sensitivity Analysis (Edge Cases)".center(60))
+print("="*60)
+
+# Define edge cases based on "deal-breakers" mentioned in the project logic
+# Feature order: ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety']
+edge_cases = pd.DataFrame([
+    # Case 1: The "Perfect" car (Low price/maint, max doors/persons/boot/safety)
+    [1, 1, 5, 6, 3, 3], 
+    # Case 2: The "Safety Deal-breaker" (Perfect car, but LOW safety)
+    [1, 1, 5, 6, 3, 1], 
+    # Case 3: The "Cost Deal-breaker" (Very high price/maint, but max safety and others)
+    [4, 4, 5, 6, 3, 3],
+    # Case 4: The "Space Deal-breaker" (Perfect car, but holds only 2 persons)
+    [1, 1, 5, 2, 3, 3]
+], columns=['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'])
+
+case_descriptions = [
+    "1. Perfect Car (Cheap, Spacious, High Safety)",
+    "2. Safety Deal-breaker (Perfect, but LOW Safety)",
+    "3. Cost Deal-breaker (Perfect, but VERY HIGH Cost)",
+    "4. Space Deal-breaker (Perfect, but ONLY 2 Persons)"
+]
+
+# Predict classes for edge cases
+predictions = best_rf.predict(edge_cases)
+
+# Map numeric predictions back to class labels for readability
+inverse_class_mapping = {0: 'unacc', 1: 'acc', 2: 'good', 3: 'vgood'}
+predicted_labels = [inverse_class_mapping[p] for p in predictions]
+
+for desc, label in zip(case_descriptions, predicted_labels):
+    print(f"{desc}")
+    print(f"   -> Predicted Class: {label}\n")
+
+print("="*60)
