@@ -1,8 +1,10 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 
 # Load the dataset and check for any missing values (week 1)
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -65,6 +67,16 @@ print("="*60)
 #Save the preprocessed dataset to a new CSV file
 df.to_csv('car_encoded.csv', index=False)
 
+# --- Visual Chart 1: Confusion Matrix Heatmap ---
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=target_names, yticklabels=target_names)
+plt.title('Confusion Matrix: Predicted vs Actual Car Acceptability')
+plt.xlabel('Predicted Class')
+plt.ylabel('Actual Class')
+plt.show()
+
 # --- Week 3: Extract feature importance scores and conduct "sensitivity analysis" ---
 
 print("\n" + "="*60)
@@ -76,6 +88,14 @@ feature_names = X.columns
 feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
 feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
 print(feature_importance_df.to_string(index=False))
+
+# --- Visual Chart 2: Feature Importance Bar Chart ---
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Importance', y='Feature', data=feature_importance_df, palette='viridis')
+plt.title('What drives the decision?(Feature Importance)')
+plt.xlabel('Importance Score')
+plt.ylabel('Car Attributes')
+plt.show()
 
 print("\n" + "="*60)
 print("Week 3: Sensitivity Analysis (Edge Cases)".center(60))
