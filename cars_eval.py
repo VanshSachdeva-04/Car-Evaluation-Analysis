@@ -13,6 +13,23 @@ df = pd.read_csv('car.data', names=columns)
 print("Missing values per column:")
 print(df.isnull().sum())
 
+# --- Additional Chart A: Target Class Distribution ---
+plt.figure(figsize=(8, 5))
+sns.countplot(data=df, x='class', order=['unacc', 'acc', 'good', 'vgood'], palette='Set2')
+plt.title('Distribution of Car Acceptability Classes (Class Imbalance)')
+plt.xlabel('Class Label')
+plt.ylabel('Number of Cars')
+plt.show()
+
+# --- Additional Chart B: Safety Level vs Acceptability ---
+plt.figure(figsize=(10, 6))
+sns.countplot(data=df, x='safety', hue='class', order=['low', 'med', 'high'], hue_order=['unacc', 'acc', 'good', 'vgood'], palette='Paired')
+plt.title('How Safety Level Affects Car Acceptability')
+plt.xlabel('Safety Level')
+plt.ylabel('Number of Cars')
+plt.legend(title='Car Acceptability')
+plt.show()
+
 # Ordinal Encoding for categorical features (e.g., mapping safety 'low' < 'med' < 'high')
 mappings = {
     'buying': {'low': 1, 'med': 2, 'high': 3, 'vhigh': 4},
