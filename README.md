@@ -33,3 +33,25 @@ cd Car-Evaluation-Analysis/
 pip install -r requirements.txt
 ```
 
+## How to Run
+```
+Execute the primary script:
+python3 cars_eval.py
+
+This script automates the following workflow:
+1. Data Loading: Ingests and preprocesses the raw dataset.
+2. Model Training: Executes the Random Forest training process using optimized hyperparameters.
+3. Validation: Calculates Accuracy and Macro F1-Score via Stratified 10-Fold CV.
+4. Visualization: Exports the confusion matrix (figure_1.png) and feature importance (figure_2.png) to the project folder.
+```
+
+## Key Findings
+```
+1. High Preformance: Achieved 97% accuracy, verified through rigorous stratified validation.
+2. Interpretablity: Identified that Safety (30.3%) and Passenger Capacity (23.9%) are the primary driver decisions.
+3. Logic Robustness: Sensitivity analysis confirmed that the model incorporates 'Safety' as a non-negotiable threshold, mirroring human decision-making hierarchies.
+```
+
+## Authors
+```
+Vansh Sachdeva, Wiem Boubaker
